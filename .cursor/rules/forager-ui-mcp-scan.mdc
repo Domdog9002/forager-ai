@@ -1,0 +1,55 @@
+---
+description: When the user wants MCP tools to scan, audit, or improve Forager UI—Playwright/browser snapshots, optional Figma, then implement in dashboard.py.
+alwaysApply: true
+---
+
+# Forager — UI scan & improve (MCP workflow)
+
+Use this when the user asks to **scan**, **audit**, **review**, or **improve** the UI **using tools** / **MCP** / **Playwright** / **browser**, or drops a **Figma** link for comparison.
+
+Primary surface: **`dashboard.py`** (Streamlit) + **`DESIGN.md`**. Shell layout: **`.cursor/rules/forager-ui-mockups.mdc`**.
+
+## 0) Preconditions (tell the user if missing)
+
+- **Running UI**: For MCP browser tools to see the app, something must serve Streamlit. Default dev URL: **`http://127.0.0.1:8501`** (see `APP_PORT` in `run_dashboard.py`; port may differ if busy).
+- User should run the dashboard (e.g. `py -3 run_dashboard.py` or their usual Streamlit entry) **before** the agent navigates, unless they only want a **static** review from `DESIGN.md` + code.
+
+## 1) Design truth (optional but strong)
+
+| User provides | Tool chain |
+|---------------|------------|
+| **Figma URL** | Read the Figma tool schema under `mcps/user-figma/tools/`, then **`get_design_context`** (or screenshot tools) for the node. Treat output as **reference**, then map to Streamlit + existing `forager-*` CSS classes. |
+| No Figma | Skip; use **`DESIGN.md`** + `forager-ui-mockups.mdc` as the design contract. |
+
+Do **not** parallel Figma + 21st Magic for the same screen unless the user asked for both.
+
+## 2) Runtime scan (Playwright / browser MCP)
+
+1. List MCP tool descriptors under **`mcps/user-playwright/tools/`** (or the enabled browser server in this project) and call tools with correct arguments.
+2. **`browser_navigate`** → app base URL (confirm with user if not 8501).
+3. **`browser_snapshot`** after load; use **`browser_take_screenshot`** when a visual record helps (layout, contrast, density).
+4. Drive to the target route (sidebar **radio** / nav): e.g. **Pack Health**, **Hub**, **Settings** — snapshot after each navigation.
+5. Note issues: hierarchy, duplicate chrome, weak spacing, contrast, noisy copy, misaligned tokens vs `DESIGN.md`.
+
+## 3) Improve
+
+- Implement in **`dashboard.py`** (CSS in the main injected block; reuse **`forager-hub-insights-*`**, **`forager-pack-health-*`**, `forager-stitch-*`, `:root` tokens).
+- Prefer **HTML + scoped CSS** for dense diagnostics (matches recent Hub / Pack Health polish).
+- **`context7`** only when Streamlit / component API behavior is uncertain.
+
+## 4) Proof + ship
+
+- Second **`browser_snapshot`** (or screenshot) on changed routes if the server is still running.
+- `py -3 -m py_compile dashboard.py` (and any touched modules).
+- If shipped behavior under PyInstaller scope changed, run **`scripts\build_forager_exe.ps1`** per workspace rules.
+
+## Copy-paste prompts (user can send these)
+
+**A — Full tool audit (no Figma)**  
+“Run the UI MCP workflow: browser to `http://127.0.0.1:8501`, snapshot Pack Health and Hub readiness, compare to `DESIGN.md`, list gaps, then patch `dashboard.py` and show before/after notes.”
+
+**B — Match Figma**  
+“Figma: `<paste URL>`. Pull design context, diff against current Streamlit Pack Health / Hub strip, implement the smallest token-aligned changes, then browser-proof.”
+
+**C — Read-only audit**  
+“Do not edit code: only MCP snapshot + screenshot + a prioritized gap list vs `DESIGN.md`.”

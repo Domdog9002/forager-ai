@@ -1,0 +1,64 @@
+---
+description: Ask follow-up questions before large or ambiguous work; plan-first and resource-aware defaults.
+alwaysApply: true
+---
+
+# Clarify first, then implement
+
+## When to ask follow-ups (triggers)
+
+Ask **before** coding, searching at scale, or editing many files when any of these apply:
+
+- **Unclear goal or success criteria** — you cannot verify “done” objectively.
+- **Ambiguous scope** — which subsystem, route, or files are in or out of scope.
+- **Multiple valid approaches** — trade-offs matter (performance vs simplicity, new vs refactor).
+- **Higher-risk changes** — migrations, security-sensitive paths, packaging (e.g. PyInstaller), or anything hard to revert.
+- **Implicit assumptions** — OS, versions, feature flags, or data the user did not mention.
+
+If the user already gave a complete spec, or says **no questions / execute as written**, skip extra questions (see Exceptions).
+
+## What to clarify (checklist)
+
+Use a **single compact block** (numbered or bullets). Cover only what is still unknown:
+
+1. **Goal** — what outcome they want, in one sentence.
+2. **Constraints** — time, risk tolerance, “must not change” areas.
+3. **Acceptance criteria** — how we know it is correct (tests, manual checks, screenshots).
+4. **Scope** — files, modules, or user-facing surfaces to touch vs leave alone.
+5. **Output format** — patch vs full file, docs vs code-only, etc.
+
+## How to ask
+
+- Prefer **one question block per turn**, not a long interview.
+- Limit to **1–2 clarification rounds**. If the user does not answer, state **reasonable defaults** and proceed, or offer a minimal plan for confirmation.
+- Keep questions **short and specific**; avoid filler.
+
+## Exceptions (skip or minimize follow-ups)
+
+- The user says **no questions**, **just do it**, **execute as written**, or equivalent.
+- The request is **already fully specified** (clear goal, scope, and acceptance criteria).
+- **Trivial fixes** with one obvious interpretation (e.g. typo they pointed to).
+
+## Cursor workflow
+
+- Prefer **Plan mode** for multi-file or high-impact work; move to full Agent implementation after the approach is agreed (user may override anytime).
+- Default to **low token / low risk**: small plan or clarifying pass first unless they demand immediate implementation.
+- For tasks that touch **design, third-party APIs, vault notes, browser proof, or task tracking**, chain MCPs deliberately per **`forager-mcp-routing.mdc`** (team orchestration): clarify → memory → optional sequential-thinking → context7 → figma / 21st / ui-ux-pro only when applicable → **forager-filesystem** for code → optional playwright → optional taskmaster updates.
+
+# This repo
+
+- Respect existing Forager rules (Streamlit shell, PyInstaller rebuild scope, UTF-8).
+
+---
+
+## Global behavior (all projects) — User Rules
+
+This file applies **this repo only** when `alwaysApply: true` is loaded from `.cursor/rules/`.
+
+To get the **same behavior in every workspace**:
+
+1. Open **Cursor Settings** → **Rules for AI** → **User Rules** (global).
+2. Copy everything **from** `# Clarify first, then implement` **through** `# This repo` above (omit the “This repo” section if you want rules to stay generic, or keep a one-line “respect project AGENTS.md / .cursor/rules” note).
+3. Save. Reload the window if rules do not pick up immediately.
+
+Path reference (Windows): settings are in the Cursor app; User Rules are edited in the **Rules for AI** UI, not only in `settings.json`.

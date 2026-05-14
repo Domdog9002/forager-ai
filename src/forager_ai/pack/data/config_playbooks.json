@@ -1,0 +1,32 @@
+{
+  "playbooks": [
+    {
+      "id": "create_performance",
+      "title": "Create — reduce tick stress",
+      "mod_hint": "create",
+      "summary": "Large contraptions: prefer chunkloading discipline and avoid excessive mechanical networks in one chunk.",
+      "doc_urls": ["https://wiki.createmod.com/"]
+    },
+    {
+      "id": "jei_memory",
+      "title": "JEI — client memory",
+      "mod_hint": "jei",
+      "summary": "Huge mod lists inflate JEI index; pair with reasonable `-Xmx` and avoid duplicate JEI addons.",
+      "doc_urls": ["https://www.curseforge.com/minecraft/mc-mods/jei"]
+    },
+    {
+      "id": "kubejs_safety",
+      "title": "KubeJS — edit safely",
+      "mod_hint": "kubejs",
+      "summary": "Keep scripts under `kubejs/`; use Forager's backup writer before large refactors.",
+      "doc_urls": ["https://kubejs.com/"]
+    },
+    {
+      "id": "forge_log_tail",
+      "title": "Forge — read the right log",
+      "mod_hint": "forge",
+      "summary": "Use `latest.log` first; `debug.log` only when asked for verbose loader traces.",
+      "doc_urls": ["https://docs.minecraftforge.net/"]
+    }
+  ]
+}

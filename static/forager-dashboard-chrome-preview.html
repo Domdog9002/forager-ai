@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Forager AI — Full launcher preview (Chrome)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --void: #030712;
+      --surface-base: #0b1220;
+      --surface-mid: #111b2e;
+      --surface-raised: #162238;
+      --surface-card: #1a2740;
+      --surface-sidebar: #060d18;
+      --sidebar-edge: rgba(34, 211, 238, 0.35);
+      --text-primary: #f1f5f9;
+      --text-secondary: #e2e8f0;
+      --text-muted: #8b9cb3;
+      --accent: #22d3ee;
+      --accent-soft: rgba(34, 211, 238, 0.14);
+      --accent-strong: #06b6d4;
+      --accent-glow: rgba(6, 182, 212, 0.45);
+      --violet: #a78bfa;
+      --violet-soft: rgba(167, 139, 250, 0.12);
+      --success: #34d399;
+      --success-bg: rgba(52, 211, 153, 0.12);
+      --warning: #fbbf24;
+      --warning-bg: rgba(251, 191, 36, 0.12);
+      --danger: #fb7185;
+      --border: rgba(148, 163, 184, 0.12);
+      --border-strong: rgba(34, 211, 238, 0.22);
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+      --shadow-float: 0 12px 40px rgba(0, 0, 0, 0.45);
+      --max: 1680px;
+      --font: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      background-color: var(--void);
+      background-image:
+        radial-gradient(ellipse 120% 80% at 50% -20%, rgba(34, 211, 238, 0.09), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 100% 30%, rgba(167, 139, 250, 0.08), transparent 45%),
+        radial-gradient(ellipse 60% 40% at 0% 80%, rgba(6, 182, 212, 0.06), transparent 50%),
+        linear-gradient(180deg, var(--surface-base) 0%, var(--void) 55%, #020617 100%);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 252px 1fr;
+      min-height: 100vh;
+      max-width: calc(var(--max) + 252px);
+      margin: 0 auto;
+    }
+    .sidebar {
+      background: linear-gradient(180deg, var(--surface-sidebar) 0%, #0a1524 100%);
+      border-right: 1px solid var(--border-strong);
+      box-shadow: 4px 0 32px rgba(0, 0, 0, 0.25);
+      padding: 1.35rem 1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .brand-block {
+      padding-bottom: 1rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .brand-sub {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 0.2rem;
+      text-shadow: 0 0 24px var(--accent-glow);
+    }
+    .btn-new {
+      width: 100%;
+      margin-top: 0.85rem;
+      padding: 0.7rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 0.875rem;
+      cursor: pointer;
+      color: #042f2e;
+      background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 45%, #0891b2 100%);
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-new:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(6, 182, 212, 0.45);
+    }
+    .nav-kicker {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 1.1rem 0 0.4rem 0.35rem;
+    }
+    .nav-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0.7rem;
+      margin: 0.1rem 0;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+    }
+    .nav-item.active {
+      background: var(--accent-soft);
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.08);
+    }
+    .nav-more {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.7rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface-mid);
+      border: 1px solid var(--border);
+    }
+    .nav-more summary {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--violet);
+      cursor: pointer;
+      list-style: none;
+    }
+    .nav-more summary::-webkit-details-marker { display: none; }
+    .nav-pill {
+      display: inline-block;
+      margin: 0.25rem 0.2rem 0 0;
+      padding: 0.28rem 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      border-radius: 999px;
+      background: var(--violet-soft);
+      color: #c4b5fd;
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      cursor: pointer;
+      font-family: var(--font);
+    }
+    .nav-pill:hover { background: rgba(167, 139, 250, 0.2); color: #ddd6fe; }
+    main {
+      padding: 0 1.35rem 2.5rem;
+      overflow-x: auto;
+    }
+    .top-chrome {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin: 0 -1.35rem 1.1rem;
+      padding: 0;
+      background: linear-gradient(180deg, rgba(22, 34, 56, 0.97) 0%, rgba(22, 34, 56, 0.88) 100%);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-float);
+    }
+    .top-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0.85rem 1.35rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1.25rem;
+      justify-content: space-between;
+    }
+    .top-title {
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .top-nav-label {
+      margin-left: 0.45rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+    }
+    .top-rev {
+      margin-left: 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .env-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .chip {
+      padding: 0.38rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: var(--surface-mid);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .chip.live {
+      border-color: rgba(52, 211, 153, 0.35);
+      color: var(--success);
+      background: var(--success-bg);
+    }
+    .chip a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .chip a:hover { text-decoration: underline; text-underline-offset: 2px; }
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.45rem 1.35rem 0.65rem;
+      max-width: var(--max);
+      margin: 0 auto;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .status-bar strong { color: var(--success); font-weight: 600; }
+    .status-bar .warn { color: var(--warning); }
+    .banner {
+      max-width: var(--max);
+      padding: 0.65rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: var(--radius);
+      background: linear-gradient(90deg, var(--accent-soft), transparent);
+      border: 1px solid var(--border-strong);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .banner code { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); }
+    .panel { display: none; animation: fadeIn 0.25s ease; }
+    .panel.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .kicker {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 1.5rem 0 0.55rem;
+    }
+    .kicker:first-child { margin-top: 0; }
+    .card {
+      background: linear-gradient(165deg, var(--surface-card) 0%, var(--surface-raised) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.15rem 1.25rem;
+      max-width: var(--max);
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { border-color: rgba(34, 211, 238, 0.15); }
+    .card h2 {
+      margin: 0 0 0.35rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .card p, .card li { margin: 0.4rem 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; max-width: var(--max); }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.85rem; max-width: var(--max); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; max-width: var(--max); }
+    @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    .tile {
+      padding: 1rem;
+      border-radius: var(--radius);
+      background: var(--surface-mid);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .tile:hover { border-color: rgba(167, 139, 250, 0.3); transform: translateY(-2px); }
+    .tile h3 { margin: 0 0 0.35rem; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+    .tile p { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
+    .tile .tag {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      background: var(--success-bg);
+      color: var(--success);
+    }
+    .tile .tag.beta { background: var(--warning-bg); color: var(--warning); }
+    .metric {
+      text-align: center;
+      padding: 0.85rem;
+      border-radius: var(--radius);
+      background: var(--surface-mid);
+      border: 1px solid var(--border);
+    }
+    .metric b { display: block; font-size: 1.35rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; }
+    .metric span { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; margin-top: 0.75rem; }
+    label.toggle {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      max-width: 52rem;
+    }
+    input[type="checkbox"] { accent-color: var(--accent-strong); width: 1.05rem; height: 1.05rem; margin-top: 0.15rem; flex-shrink: 0; }
+    input[type="text"], input[type="search"], select, textarea {
+      width: 100%;
+      max-width: 28rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-mid);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 0.85rem;
+    }
+    textarea { min-height: 88px; max-width: 100%; resize: vertical; }
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: rgba(34, 211, 238, 0.08);
+      color: var(--accent);
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover { background: rgba(34, 211, 238, 0.15); border-color: var(--border-strong); }
+    .btn-primary {
+      background: linear-gradient(135deg, #22d3ee, #0891b2);
+      color: #042f2e;
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-ghost { background: transparent; color: var(--text-muted); }
+    .btn-violet {
+      background: var(--violet-soft);
+      border-color: rgba(167, 139, 250, 0.35);
+      color: #c4b5fd;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .filters button {
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-mid);
+      color: var(--text-muted);
+      font-family: var(--font);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .filters button.on {
+      border-color: rgba(167, 139, 250, 0.45);
+      color: #ddd6fe;
+      background: var(--violet-soft);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th, td { text-align: left; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--border); }
+    th {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    td { color: var(--text-secondary); }
+    .badge {
+      display: inline-block;
+      padding: 0.18rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+    .badge.ok { background: var(--success-bg); color: var(--success); }
+    .badge.ai { background: var(--violet-soft); color: #c4b5fd; }
+    .diff {
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      line-height: 1.45;
+      background: #070d18;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      overflow-x: auto;
+      color: #94a3b8;
+      white-space: pre-wrap;
+    }
+    .log-box {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      background: #070d18;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      color: #64748b;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+    .footer-note {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      max-width: var(--max);
+    }
+    .footer-note code { font-family: var(--mono); color: var(--accent); font-size: 0.76rem; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+    .hr { height: 1px; background: var(--border); margin: 1rem 0; border: none; }
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        border-right: none;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      .brand-block { flex: 1 1 140px; border-bottom: none; margin: 0; padding: 0; }
+      .btn-new { width: auto; flex: 1; min-width: 120px; margin-top: 0; }
+      .nav-kicker { width: 100%; }
+      .nav-scroll {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        width: 100%;
+      }
+      .nav-item { width: auto; flex: 1 1 auto; min-width: calc(50% - 0.25rem); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-title">Forager AI</div>
+        <div class="brand-sub">Modlauncher Ops</div>
+        <button type="button" class="btn-new">+ New Instance</button>
+      </div>
+      <div class="nav-kicker">Primary</div>
+      <div class="nav-scroll">
+        <button type="button" class="nav-item active" data-panel="atlas" data-label="Feature atlas">Feature atlas</button>
+        <button type="button" class="nav-item" data-panel="forager" data-label="Forager">Forager</button>
+        <button type="button" class="nav-item" data-panel="home" data-label="Home">Home</button>
+        <button type="button" class="nav-item" data-panel="mods" data-label="Browse Modpacks">Browse Modpacks</button>
+        <button type="button" class="nav-item" data-panel="instances" data-label="My Packs">My Packs</button>
+        <button type="button" class="nav-item" data-panel="power" data-label="Power Center">Power Center</button>
+        <button type="button" class="nav-item" data-panel="architect" data-label="AI · Architect">AI · Architect</button>
+        <button type="button" class="nav-item" data-panel="health" data-label="Pack Health">Pack Health</button>
+        <button type="button" class="nav-item" data-panel="settings" data-label="Settings">Settings</button>
+        <button type="button" class="nav-item" data-panel="approvals" data-label="Approvals Inbox">Approvals Inbox</button>
+      </div>
+      <details class="nav-more" open>
+        <summary>More tools</summary>
+        <div style="margin-top:0.5rem;">
+          <button type="button" class="nav-pill" data-panel="assistant" data-label="AI · Assistant">AI · Assistant</button>
+          <button type="button" class="nav-pill" data-panel="crashes" data-label="AI · Crashes">AI · Crashes</button>
+          <button type="button" class="nav-pill" data-panel="plans" data-label="AI · Plans">AI · Plans</button>
+          <button type="button" class="nav-pill" data-panel="atlas2" data-label="AI · Atlas">AI · Atlas</button>
+          <button type="button" class="nav-pill" data-panel="council" data-label="AI · Council">AI · Council</button>
+          <button type="button" class="nav-pill" data-panel="resource" data-label="Resource packs">Resource packs</button>
+          <button type="button" class="nav-pill" data-panel="content" data-label="Content">Content</button>
+          <button type="button" class="nav-pill" data-panel="performance" data-label="Performance">Performance</button>
+          <button type="button" class="nav-pill" data-panel="drift" data-label="Drift">Drift</button>
+          <button type="button" class="nav-pill" data-panel="hub" data-label="Advanced Tools">Advanced Tools</button>
+          <button type="button" class="nav-pill" data-panel="forge" data-label="Forge Studio">Forge Studio</button>
+        </div>
+      </details>
+    </aside>
+
+    <main>
+      <header class="top-chrome">
+        <div class="top-inner">
+          <div>
+            <span class="top-title">Forager AI Launcher</span>
+            <span class="top-nav-label" id="chrome-route">Feature atlas</span>
+            <span class="top-rev">static HTML preview</span>
+          </div>
+          <div class="env-tabs">
+            <span class="chip live">Forge 1.20.1</span>
+            <span class="chip"><a href="#">Modpack Library</a></span>
+            <span class="chip"><a href="#" onclick="goPanel('approvals'); return false;">Approvals</a></span>
+          </div>
+        </div>
+        <div class="status-bar">
+          <span class="warn">CurseForge API: add key in Settings for full listing</span>
+          <span>Packs: <strong>6</strong> · Instances: <strong>4</strong> · Pending approvals: <strong>2</strong></span>
+        </div>
+      </header>
+
+      <div class="banner">
+        Visual mock only — open the real dashboard with <code>streamlit run dashboard.py</code> in the repo. This page demos layout, theme, and surface coverage in Chrome.
+      </div>
+
+      <!-- Feature atlas (default) -->
+      <section class="panel active" id="panel-atlas" data-title="Feature atlas">
+        <div class="kicker">Launcher map</div>
+        <div class="card">
+          <h2>Everything in one cockpit</h2>
+          <p>Use the sidebar to open each area. Below is a quick index of what the full Forager shell covers (aligned with the Streamlit app).</p>
+        </div>
+        <div class="grid-3">
+          <div class="tile"><h3>Forager hub</h3><p>Pack brain, library sync, grounded chat, feature-plan drafts.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Browse Modpacks</h3><p>Modrinth + CurseForge, preflight, install targets, conflict graph.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>My Packs</h3><p>Instances, configure pack, native launch, snapshots.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Power Center</h3><p>Fast actions, tool shortcuts, Playwright smoke, validation.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>AI · Architect</h3><p>Pack design, compat factory, config plans, progression, mob scaffold.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Pack Health</h3><p>Conflicts, drift signals, diagnostics, council handoff.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Approvals Inbox</h3><p>Queued AI plans, diff review, apply gate, reject.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>AI · Plans</h3><p>Generate plan, diff/apply, checkpoints, compat rules.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>AI · Crashes</h3><p>Heuristics + vision-aware crash triage and hotfix plans.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>AI · Assistant</h3><p>Pack-aware Q&amp;A, RAG, slash /go routing.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>AI · Council</h3><p>Multi-reviewer artifacts, stepwise mode, lessons.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>AI · Atlas</h3><p>Content index, tags, council-ready summaries.</p><span class="tag beta">Beta</span></div>
+          <div class="tile"><h3>Resource packs</h3><p>Browser, install targets, pack format helpers.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Content studio</h3><p>Textures, models, animations, sound hooks.</p><span class="tag beta">Beta</span></div>
+          <div class="tile"><h3>Performance</h3><p>Profiler baselines, jar hot spots, memory hints.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Drift</h3><p>Client/server parity, content mismatch tracking.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Advanced Tools</h3><p>Lockfile, known issues, exports, deep toolkit.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Forge Studio</h3><p>Modrinth research, Forge helpers, MDK paths.</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Vanilla MC</h3><p>Version catalog surface (when enabled).</p><span class="tag">Live</span></div>
+          <div class="tile"><h3>Configure Pack</h3><p>Per-instance tabs: content, AI mods, tweaks, atlas, textures.</p><span class="tag">Live</span></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-forager" data-title="Forager">
+        <div class="kicker">Pack workbench</div>
+        <div class="card">
+          <h2>Active pack context</h2>
+          <p>Select a pack row in the real app to ground Assistant, Hub tape, and AI tools.</p>
+          <div class="row">
+            <button type="button" class="btn btn-primary">Refresh library</button>
+            <button type="button" class="btn">Browse Modpacks</button>
+            <button type="button" class="btn">Pack Health</button>
+            <button type="button" class="btn btn-violet">Approvals Inbox</button>
+          </div>
+        </div>
+        <div class="grid-4">
+          <div class="metric"><b>6</b><span>Packs</span></div>
+          <div class="metric"><b>4</b><span>Instances</span></div>
+          <div class="metric"><b>12</b><span>External profiles</span></div>
+          <div class="metric"><b>3</b><span>Java installs</span></div>
+        </div>
+        <div class="card" style="margin-top:1rem;">
+          <h2>Hub assistant (mock)</h2>
+          <textarea placeholder="Ask about your pack, mods, or crashes…"></textarea>
+          <div class="row" style="margin-top:0.5rem;">
+            <select><option>Draft feature plan</option><option>Quick answer</option><option>Deep research</option></select>
+            <button type="button" class="btn btn-primary">Send</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-home" data-title="Home">
+        <div class="kicker">Launcher workspace</div>
+        <div class="card">
+          <h2>First-time checklist</h2>
+          <ol style="padding-left:1.2rem; margin:0.5rem 0;">
+            <li>Settings → Mod library paths + API keys</li>
+            <li>My Packs → Sync library</li>
+            <li>Browse Modpacks → pick target + run preflight</li>
+          </ol>
+          <div class="row">
+            <button type="button" class="btn btn-primary">Open Power Center</button>
+            <button type="button" class="btn">Run Playwright smoke</button>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><h2>Quick actions</h2><p>Forager · Power · Mods · Health · Assistant · Council · Forge Studio.</p><div class="pill-row"><span class="chip">Preflight</span><span class="chip">Pack-aware AI</span><span class="chip">Compat memory</span></div></div>
+          <div class="card"><h2>Launcher snapshot</h2><p>Metrics mirror the live home strip — packs, instances, Java detection.</p></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-mods" data-title="Browse Modpacks">
+        <div class="kicker">Catalog</div>
+        <div class="card">
+          <h2>Mod browser</h2>
+          <div class="row" style="align-items:flex-end;">
+            <div style="flex:1; min-width:200px;"><label style="font-size:0.72rem;color:var(--text-muted);">Search</label><input type="search" placeholder="e.g. JEI, Create, Sodium…" /></div>
+            <select style="max-width:10rem;"><option>Modrinth</option><option>CurseForge</option><option>Both</option></select>
+            <select style="max-width:8rem;"><option>Forge</option><option>Fabric</option></select>
+            <button type="button" class="btn btn-primary">Search</button>
+          </div>
+          <hr class="hr" />
+          <p><span class="badge ok">Preflight</span> Install writes gated — review compatibility report before apply.</p>
+          <table>
+            <thead><tr><th>Project</th><th>Source</th><th>MC</th><th>Loader</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong style="color:var(--text-primary);">Just Enough Items</strong></td><td>Modrinth</td><td>1.20.1</td><td>Forge</td><td><button type="button" class="btn">Details</button></td></tr>
+              <tr><td><strong style="color:var(--text-primary);">Embeddium</strong></td><td>Modrinth</td><td>1.20.1</td><td>Forge</td><td><button type="button" class="btn">Details</button></td></tr>
+              <tr><td><strong style="color:var(--text-primary);">Create</strong></td><td>CurseForge</td><td>1.20.1</td><td>Forge</td><td><button type="button" class="btn">Details</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-instances" data-title="My Packs">
+        <div class="kicker">Instances</div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>Create · Main <span class="badge ai">Forge</span></h2>
+            <p>Launch · Configure pack · Open folder · Duplicate</p>
+            <div class="row"><button type="button" class="btn btn-primary">Launch</button><button type="button" class="btn">Configure</button></div>
+          </div>
+          <div class="card">
+            <h2>ATM9 — linked</h2>
+            <p>External profile · libraries from source launcher</p>
+            <div class="row"><button type="button" class="btn">Open in original launcher</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-power" data-title="Power Center">
+        <div class="kicker">Ops cockpit</div>
+        <div class="card">
+          <h2>Fast actions</h2>
+          <div class="row">
+            <button type="button" class="btn btn-primary">Browse Modpacks</button>
+            <button type="button" class="btn">Run Conflicts</button>
+            <button type="button" class="btn">Ask Assistant</button>
+            <button type="button" class="btn">AI Architect</button>
+            <button type="button" class="btn btn-violet">Open Council</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Tool shortcuts</h2>
+          <div class="grid-3">
+            <button type="button" class="btn" style="width:100%;">Crashes</button>
+            <button type="button" class="btn" style="width:100%;">Plans</button>
+            <button type="button" class="btn" style="width:100%;">Atlas</button>
+            <button type="button" class="btn" style="width:100%;">Performance</button>
+            <button type="button" class="btn" style="width:100%;">Drift</button>
+            <button type="button" class="btn" style="width:100%;">Resource packs</button>
+            <button type="button" class="btn" style="width:100%;">Vanilla MC</button>
+            <button type="button" class="btn" style="width:100%;">Content</button>
+            <button type="button" class="btn" style="width:100%;">Advanced Tools</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Validation</h2>
+          <p>Playwright smoke — Home, Mods, Power, AI, Configure flows (real app only).</p>
+          <button type="button" class="btn">Run Playwright smoke</button>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-architect" data-title="AI · Architect">
+        <div class="kicker">Power lab</div>
+        <div class="card">
+          <h2>Workflow</h2>
+          <div class="pill-row">
+            <span class="chip live">Design pack</span>
+            <span class="chip">Compat factory</span>
+            <span class="chip">Install advice</span>
+            <span class="chip">Config plan</span>
+            <span class="chip">Progression audit</span>
+            <span class="chip">Mob scaffold</span>
+          </div>
+          <hr class="hr" />
+          <textarea placeholder="Architecture request…"></textarea>
+          <div class="row"><button type="button" class="btn btn-primary">Generate Pack Architecture</button><button type="button" class="btn btn-violet">Send to Council</button></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-health" data-title="Pack Health">
+        <div class="kicker">AI diagnostics</div>
+        <div class="card">
+          <h2>Conflict scan</h2>
+          <p>Summary: <strong style="color:var(--warning);">14</strong> edges · <span class="badge ok">3</span> auto-resolvable</p>
+          <div class="log-box">[scan] kubejs/ vs datapacks/ — duplicate recipe ids (sample)
+[scan] mixin targets — optional upgrade path</div>
+          <div class="row"><button type="button" class="btn btn-primary">Re-run scan</button><button type="button" class="btn btn-violet">Open Council with scan</button></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-settings" data-title="Settings">
+        <div class="kicker">Launcher + AI</div>
+        <div class="card">
+          <h2>API keys &amp; models</h2>
+          <p>OpenRouter · CurseForge · embedding model · Council override.</p>
+          <div class="row"><input type="text" placeholder="OpenRouter API key (masked in app)" style="max-width:22rem;" /><button type="button" class="btn">Save API keys</button></div>
+        </div>
+        <div class="card">
+          <h2>Safety &amp; approvals</h2>
+          <label class="toggle"><input type="checkbox" /> Block all AI plan applies (Plans page, crash hotfix apply, instance plan Apply)</label>
+          <label class="toggle"><input type="checkbox" checked /> Require “Mark diffs reviewed” before each Apply (after preview succeeds)</label>
+          <div class="row"><button type="button" class="btn btn-primary" onclick="goPanel('approvals')">Open Approvals Inbox</button></div>
+        </div>
+        <div class="card">
+          <h2>Mod library paths</h2>
+          <p>CurseForge / Modrinth profile roots, catalog offline mode, pin drift.</p>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-approvals" data-title="Approvals Inbox">
+        <div class="kicker">Human in the loop</div>
+        <div class="card">
+          <h2>Global AI write safety</h2>
+          <label class="toggle"><input type="checkbox" /> Block all AI plan applies</label>
+          <label class="toggle"><input type="checkbox" checked /> Require diff review before Apply</label>
+        </div>
+        <div class="card">
+          <h2>Queue <span class="badge">2 pending</span></h2>
+          <div class="filters" id="filters">
+            <button type="button" class="on" data-f="all">All</button>
+            <button type="button" data-f="plans">AI · Plans</button>
+            <button type="button" data-f="arch">AI · Architect</button>
+            <button type="button" data-f="crash">AI · Crashes</button>
+            <button type="button" data-f="other">Other</button>
+          </div>
+          <table>
+            <thead><tr><th>Item</th><th>Pack</th><th>Risk</th><th>Waiting</th><th></th></tr></thead>
+            <tbody id="rows">
+              <tr data-cat="plans"><td><strong style="color:var(--text-primary);">JEI + performance pass</strong></td><td>MyPack</td><td>file_writes</td><td>12m</td><td><button type="button" class="btn" onclick="showDetail(1)">Review</button></td></tr>
+              <tr data-cat="crash"><td><strong style="color:var(--text-primary);">Crash hotfix — mixin</strong></td><td>DiagPack</td><td>file_writes</td><td>1h</td><td><button type="button" class="btn" onclick="showDetail(2)">Review</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="kicker" id="detail-anchor">Item detail</div>
+        <div class="card" id="detail-panel" hidden>
+          <h2 id="detail-title">Plan summary</h2>
+          <p id="detail-meta">Pack root · source</p>
+          <div class="row">
+            <button type="button" class="btn btn-ghost" onclick="hideDetail()">Back to list</button>
+            <button type="button" class="btn">Open in source screen</button>
+          </div>
+          <p style="margin-top:0.75rem; font-size:0.82rem;">Quality gate: <span style="color:var(--success); font-weight:600;">preview OK</span></p>
+          <div class="kicker" style="margin-top:0.75rem;">Diff preview</div>
+          <div class="diff" id="detail-diff"></div>
+          <div class="row" style="margin-top:1rem;">
+            <button type="button" class="btn btn-ghost">Reject</button>
+            <button type="button" class="btn">Save plan</button>
+            <button type="button" class="btn" id="btn-mark">Mark diffs reviewed (enables Apply for this plan)</button>
+            <button type="button" class="btn btn-primary" id="btn-apply" disabled>Apply plan</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-assistant" data-title="AI · Assistant">
+        <div class="card"><h2>Pack-aware assistant</h2><p>Manifest + conflict scan + RAG roots + retained context.</p><textarea placeholder="Ask about your pack…"></textarea><div class="row"><button type="button" class="btn btn-primary">Send</button><span class="chip">/go settings</span><span class="chip">/go mods</span></div></div>
+      </section>
+      <section class="panel" id="panel-crashes" data-title="AI · Crashes">
+        <div class="card"><h2>Crash triage</h2><p>Paste log · pick pack · heuristics or vision-backed AI analyze.</p><textarea placeholder="Paste crash log…"></textarea><div class="row"><button type="button" class="btn">Heuristics only</button><button type="button" class="btn btn-primary">Analyze with Forager AI</button></div></div>
+      </section>
+      <section class="panel" id="panel-plans" data-title="AI · Plans">
+        <div class="card"><h2>Feature plans</h2><p>Target pack → prompt → generate JSON plan → diff → apply with checkpoints.</p><textarea placeholder="Example: add JEI, keep load time reasonable"></textarea><div class="row"><button type="button" class="btn btn-primary">Generate Plan</button><button type="button" class="btn">Rollback checkpoint</button></div></div>
+      </section>
+      <section class="panel" id="panel-atlas2" data-title="AI · Atlas">
+        <div class="card"><h2>Content atlas</h2><p>Indexed items, mobs, structures — rebuild index from pack; export for Council.</p><button type="button" class="btn btn-primary">Rebuild index</button></div>
+      </section>
+      <section class="panel" id="panel-council" data-title="AI · Council">
+        <div class="card"><h2>Multi-reviewer council</h2><p>Load artifact · chair summary · stepwise mode between reviewer calls.</p><div class="row"><button type="button" class="btn btn-violet">Run Council</button></div></div>
+      </section>
+      <section class="panel" id="panel-resource" data-title="Resource packs">
+        <div class="card"><h2>Resource packs</h2><p>List, install target, pack format — mirrors Browse Modpacks patterns.</p></div>
+      </section>
+      <section class="panel" id="panel-content" data-title="Content">
+        <div class="card"><h2>Content studio</h2><p>Textures, models, animations, sound — AI blueprint flows.</p></div>
+      </section>
+      <section class="panel" id="panel-performance" data-title="Performance">
+        <div class="card"><h2>Performance profiler</h2><p>Jar footprint, config hot spots, baseline save/compare.</p><div class="log-box">Sample: top jars by size + duplicate mod families</div></div>
+      </section>
+      <section class="panel" id="panel-drift" data-title="Drift">
+        <div class="card"><h2>Drift detection</h2><p>Client vs server tree diff severity — link to Pack Health.</p></div>
+      </section>
+      <section class="panel" id="panel-hub" data-title="Advanced Tools">
+        <div class="card"><h2>Advanced toolkit</h2><p>Lockfile export, known-issue DB, mods diff, crash snippet quick analyze.</p><div class="row"><button type="button" class="btn">Write pack.lock.json</button><button type="button" class="btn">Open logs folder</button></div></div>
+      </section>
+      <section class="panel" id="panel-forge" data-title="Forge Studio">
+        <div class="card"><h2>Forge / Modrinth research</h2><p>MDK path from Settings · Gradle helpers · project research cards.</p></div>
+      </section>
+
+      <p class="footer-note">
+        Open in Chrome: <code>static/forager-dashboard-chrome-preview.html</code> — theme tokens align with <code>DESIGN.md</code> (slate, cyan, violet accents).
+      </p>
+    </main>
+  </div>
+
+  <script>
+    function goPanel(id) {
+      var btn = document.querySelector('.nav-item[data-panel="' + id + '"], .nav-pill[data-panel="' + id + '"]');
+      if (btn) btn.click();
+    }
+    (function () {
+      var navItems = document.querySelectorAll('.nav-item, .nav-pill');
+      var panels = document.querySelectorAll('.panel');
+      var route = document.getElementById('chrome-route');
+      navItems.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var id = btn.getAttribute('data-panel');
+          var label = btn.getAttribute('data-label') || id;
+          navItems.forEach(function (b) {
+            if (b.classList.contains('nav-item')) b.classList.toggle('active', b === btn && btn.classList.contains('nav-item'));
+          });
+          panels.forEach(function (p) {
+            p.classList.toggle('active', p.id === 'panel-' + id);
+          });
+          if (route) route.textContent = label;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+      var filters = document.getElementById('filters');
+      var rows = document.querySelectorAll('#rows tr');
+      if (filters && rows.length) {
+        filters.addEventListener('click', function (e) {
+          var t = e.target;
+          if (t.tagName !== 'BUTTON') return;
+          var f = t.getAttribute('data-f');
+          filters.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === t); });
+          rows.forEach(function (tr) {
+            var cat = tr.getAttribute('data-cat');
+            tr.style.display = f === 'all' || f === cat ? '' : 'none';
+          });
+        });
+      }
+      var detailPanel = document.getElementById('detail-panel');
+      if (detailPanel) {
+        detailPanel.addEventListener('click', function (e) {
+          var t = e.target;
+          if (t.id !== 'btn-mark') return;
+          var apply = document.getElementById('btn-apply');
+          if (apply) apply.disabled = false;
+          t.textContent = 'Reviewed ✓';
+          t.disabled = true;
+        });
+      }
+    })();
+    function showDetail(n) {
+      goPanel('approvals');
+      setTimeout(function () {
+        var p = document.getElementById('detail-panel');
+        var title = document.getElementById('detail-title');
+        var meta = document.getElementById('detail-meta');
+        var diff = document.getElementById('detail-diff');
+        var mark = document.getElementById('btn-mark');
+        var apply = document.getElementById('btn-apply');
+        if (!p) return;
+        p.hidden = false;
+        if (apply) apply.disabled = true;
+        if (mark) {
+          mark.disabled = false;
+          mark.textContent = 'Mark diffs reviewed (enables Apply for this plan)';
+        }
+        if (n === 1) {
+          title.textContent = 'JEI + performance pass';
+          meta.textContent = 'Pack: packs/MyPack · Source: AI · Plans';
+          diff.textContent = '--- a/manifest.json\n+++ b/manifest.json\n@@ -10,1 +10,2 @@\n+  "file": "mods/jei-…jar"';
+        } else {
+          title.textContent = 'Crash hotfix — mixin';
+          meta.textContent = 'Pack: packs/DiagPack · Source: AI · Crashes';
+          diff.textContent = '--- a/config/crash-helper.txt\n+++ b/config/crash-helper.txt\n@@ -0,0 +1,2 @@\n+rollback=checkpoint-7f3a\n+verify=client_boot';
+        }
+        var anchor = document.getElementById('detail-anchor');
+        if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    }
+    function hideDetail() {
+      var p = document.getElementById('detail-panel');
+      if (p) p.hidden = true;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+---
+description: When to use which Cursor MCP server (Figma, 21st, Locofy, context7, memory, filesystem, Playwright, Taskmaster) in this workspace.
+alwaysApply: true
+---
+
+# Forager workspace — MCP routing
+
+Use this table so tools complement each other instead of redundant or unsafe calls.
+
+## Team orchestration (single workflow)
+
+Treat MCPs as **roles on one team**, not a menu of parallel guesses. One subsystem owns each concern; hand off explicitly.
+
+**Default order for non-trivial work** (skip steps that do not apply):
+
+1. **Clarify** — Follow `forager-clarify-and-plan-first.mdc` when the goal, scope, or acceptance criteria are unclear (one compact question block, then proceed).
+2. **Remember context** — **`memory`**: read graph early for durable prefs, conventions, or past decisions (no secrets). Optionally **write** short post-task observations only when the user will benefit next session.
+3. **Think when messy** — **`sequential-thinking`**: use for multi-step design, debugging, or trade-off analysis where the answer is not obvious; avoid for one-line fixes.
+4. **Library truth** — **`context7`**: before asserting Streamlit / PyInstaller / third-party API details. If Context7 errors (e.g. `fetch failed`), **fall back** to **web search** or official docs links; do not invent APIs.
+5. **Design truth** — **`figma`**: when the user gives a Figma URL or “match this design,” pull design context **first**; then implement in **this repo** (Streamlit in `dashboard.py` by default). Do not also spam **21st** or **ui-ux-pro** for the same screen unless the user asked for a **separate web/React** surface.
+6. **Web/React UI generation** — **`@21st-dev/magic`** or **`ui-ux-pro`**: only when the user explicitly wants generated web components or the UIPro plugin workflow. **`ui-ux-pro`** requires the Figma plugin + WebSocket; if unavailable, say so and use **figma** + hand implementation or **21st** for React snippets, per user preference.
+7. **Implementation** — **`forager-filesystem`** for all repo edits under `C:/Apps/Forager ai`. **`obsidian`** only for vault paths under `C:/Users/DCarl/Documents/Forager AI` when the user points there.
+8. **Proof** — **`playwright`**: after meaningful UI changes when visual or regression proof helps; keep runs minimal (navigate + snapshot or targeted flow).
+9. **Tracked delivery** — **`taskmaster`**: when the user wants a broken-down backlog or explicit task tracking; update or consult tasks at milestones, not every micro-edit.
+
+### UI scan & improve (explicit request)
+
+When the user asks to **scan / audit / improve the UI using MCP**, **Playwright**, or **browser tools** (with or without a Figma link), follow **`.cursor/rules/forager-ui-mcp-scan.mdc`**: running app URL → browser navigate/snapshot (and screenshots as needed) → optional Figma `get_design_context` → gap list vs **`DESIGN.md`** → implement in **`dashboard.py`** → optional second snapshot → compile / exe rebuild per packaging rules.
+
+**Parallelism**: Safe to run in parallel early: e.g. **`memory`** (read) + **`context7`** (resolve) while scoping. **Do not** parallel two “design truth” sources (e.g. Figma + 21st) for the same widget unless the user asked for both.
+
+**In-app AI (Forager exe / OpenRouter)** vs **Cursor**: Runtime assistant keys and models live in the app Settings; they are **not** validated by MCP. Cursor agent uses MCP + repo; keep responsibilities separate unless the user explicitly connects them (e.g. “mirror this behavior in dashboard”).
+
+## Filesystem (two roots — pick deliberately)
+
+| MCP key (Cursor) | Root | Use for |
+|------------------|------|---------|
+| **forager-filesystem** | `C:/Apps/Forager ai` | Repo code, `dashboard.py`, `src/`, scripts, tests, packaging. **Default** for implementation work. |
+| **obsidian** | `C:/Users/DCarl/Documents/Forager AI` | Vault / notes only. Never use for code edits unless the user explicitly points at a vault path. |
+
+## Design and UI generation
+
+| When | Prefer |
+|------|--------|
+| User shares a **Figma URL**, “match this design”, or design-system work | **figma** (official remote MCP) first for design truth, then implement in **this repo’s stack** (Streamlit in `dashboard.py` unless they ask for a separate web app). |
+| **New** UI for **web/React** (not Streamlit) | **@21st-dev/magic** or **ui-ux-pro** (Locofy) only when the user wants that surface; **not** the default for `dashboard.py`. |
+| **ui-ux-pro** | Code from the **UIPro Figma plugin** over WebSocket — use when the plugin workflow is already in play. |
+
+## Docs, memory, automation
+
+| When | Prefer |
+|------|--------|
+| Library/API facts (Streamlit, PyInstaller, Forge-adjacent Python, etc.) | **context7** before guessing. |
+| Durable preferences, recurring decisions, project conventions (no secrets) | **memory**. |
+| Visual/regression proof after UI changes | **playwright** (optional). |
+| Multi-step work the user wants **tracked** as tasks | **taskmaster**. |
+
+## 21st Magic — API key (security)
+
+- Keys must **not** appear in `args` in `mcp.json` (screenshot / sync leak risk).
+- Configure **`@21st-dev/magic`** with **`env.API_KEY`** in `C:\Users\DCarl\.cursor\mcp.json`.
+- After any exposure: **rotate** the key in the [21st Magic console](https://21st.dev/magic/console), then paste the new value only into `env.API_KEY` (reload Cursor / MCP after edits).
+
+## Integrated AI inside the shipped app
+
+**OpenRouter** and in-app assistants in `dashboard.py` / `src/forager_ai/ai/` are **separate** from Cursor MCP. Validate those with a real app run and Settings keys — not via Figma `whoami` or MCP smoke tests.

@@ -1,0 +1,43 @@
+---
+description: Rebuild PyInstaller Dev Suite exe when bundled app surfaces change (agent must run clean build).
+alwaysApply: true
+---
+
+# PyInstaller exe — rebuild when necessary
+
+After **any substantive change** that affects what ships inside **`Forager_Dev_Suite*.exe`**, finish the task by running a **clean rebuild** (unless the user explicitly asked you **not** to build, or the environment cannot run PyInstaller).
+
+## When a rebuild is **required**
+
+Run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build_forager_exe.ps1
+```
+
+If you already ran this successfully **in the same chat turn** for the same changes, don’t rerun without reason.
+
+Touches that normally require rebuild (non-exhaustive — use judgment):
+
+- `dashboard.py`
+- `run_dashboard.py`
+- `Forager_Dev_Suite.spec`
+- `src/**` (everything under `src/forager_ai` and bundled code)
+- `scripts/**` (several dirs are bundled as `datas`; treat script changes like product changes unless clearly dev-only tooling not referenced by the launcher)
+- `theme_rules/**`
+- Launcher / Streamlit embedding paths under `webview` or bundled assets if added to the `.spec`
+
+## When rebuild is **not** needed
+
+Pure docs (`docs/**`), tests-only changes (`tests/**`) with zero runtime/import impact, Cursor rules, roadmap typos — **skip** rebuild.
+
+If unsure whether a file is bundled, **open `Forager_Dev_Suite.spec`** `datas=` / Analysis entry points and rebuild if in doubt.
+
+## Preconditions
+
+1. Ask the user to **close `Forager_Dev_Suite*.exe`** if rebuild fails on locked files — the script prints running PIDs.
+2. Builds use **`py -3`** (`build_forager_exe.ps1`). If PyInstaller is missing in that env, note it and stop.
+
+## After build
+
+Briefly confirm the printed **`dist\Forager_Dev_Suite*.exe`** path in your final message so the user can launch the fresh binary.

@@ -1,0 +1,56 @@
+---
+description: Forager AI UI mockups — match real Streamlit shell, nav, and slate theme
+alwaysApply: true
+---
+
+# Forager AI — UI mock / wireframe guidance
+
+The product UI is a **Streamlit** app; primary surface is `dashboard.py` (inject CSS + `st.sidebar` + main block). When producing **mockups, wireframes, HTML snippets, or ASCII layouts**, treat this as the source of truth — not a generic SaaS admin or marketing site.
+
+## Shell layout
+
+- **Left sidebar**: Brand line **“Forager AI”** (`forager-stitch-brand`), subline **“Modlauncher Ops”** (`forager-stitch-sub`, sky accent). **Tips** as popover (or expander on older Streamlit). Primary button **“+ New Instance”** (full width). Navigation is a **vertical radio list** (not horizontal tabs in the sidebar).
+- **Top chrome** (main column, sticky): **“Forager AI Launcher”** + current **nav label** + small **UI revision** string; env strip shows **Forge 1.20.1** / **Modpack Library** (+ **Approvals (n)** when pending) style chips (`forager-top-chrome`, `forager-env-tabs`). **Pack Health** is the sidebar route only (no duplicate strip under chrome).
+- **Main body**: Wide content (max-width ~1680px), cards/panels use **zinc** raised surfaces — see `DESIGN.md` / `:root` in `dashboard.py`.
+
+## Sidebar nav labels (exact strings, this order)
+
+Use these names in mocks; do not rename casually.
+
+1. Home  
+2. Forager  
+3. Browse Modpacks  
+4. My Packs  
+5. Power Center  
+6. AI · Architect  
+7. Pack Health  
+8. Settings  
+
+Hidden routes (no permanent sidebar selection) still use user-facing labels like **AI · Assistant**, **Configure Pack**, **AI · Council** — only when mocking those flows.
+
+## Color & mood (Forge Pro / zinc launcher)
+
+Prefer tokens aligned with injected `:root` (`--fp-*`):
+
+- Background / depth: **#09090b** canvas, **#18181b** raised, sidebar **#0c0c0e**, borders **#27272a**.
+- Text: **#fafafa** primary, **#a1a1aa** muted.
+- Accent: **sky #0ea5e9** (single primary accent); success **#22c55e**, warning **#eab308**.
+- Avoid default **purple gradient** chrome; keep surfaces calm and product-like (Modrinth-style clarity, not “AI demo” glow).
+
+## What “good mocks” include
+
+- Say **Streamlit-shaped** primitives where relevant: `st.sidebar`, `st.columns`, `st.container(border=True)`, expanders, primary/secondary buttons.
+- Preserve **launcher semantics**: packs/instances, mod browser, catalogs (Modrinth/CurseForge), jar enable/disable — not ecommerce patterns.
+- For HTML/CSS mocks of chrome, reuse class names **`forager-stitch-brand`**, **`forager-top-chrome`**, **`forager-mod-browser`** where it helps developers map design → existing styles.
+
+## Avoid
+
+- Inventing nav items or rebranding **My Packs** / **Pack Health**.
+- Assuming React/Vue component trees unless the user explicitly asked for a separate web stack.
+- Light-on-white “default Streamlit” unless the user asked for a light theme variant.
+
+When unsure, **open `dashboard.py`** for `FORGER_NAV_ITEMS`, `forager-stitch-*`, and `:root` variables before proposing a layout.
+
+Canonical **design tokens + prose** for agents and the [`@google/design.md`](https://www.npmjs.com/package/@google/design.md) linter live in repo root **`DESIGN.md`** (keep in sync with this rule when the shell palette changes).
+
+**Optional motion reference — [React Bits](https://reactbits.dev/):** React/TS components for animated backgrounds and effects. Forager remains **Streamlit**; treat React Bits as **inspiration only** and port selectively into **CSS** or **`components.html`** (see **Settings → UI inspiration — React Bits**). Do not replace the shell with a React app unless the user explicitly requests a separate web surface.

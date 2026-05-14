@@ -1,0 +1,22 @@
+{
+  "playbooks": [
+    {
+      "id": "mob_smoke_test",
+      "title": "Mob smoke test (creative)",
+      "steps": [
+        "Summon with `/summon <modid>:<registry_name> ~ ~ ~` after registering renderer (or invisible entity is OK for AI-only).",
+        "Verify goals: leap triggers beyond melee range; slam when close; baby zombies only if `summon_on_hurt` enabled.",
+        "Check server log for attribute registration errors — `EntityAttributeCreationEvent` must reference your `ENTITY` registry object."
+      ]
+    },
+    {
+      "id": "gecko_merge",
+      "title": "GeckoLib merge order",
+      "steps": [
+        "Get Forge client booting with vanilla renderer/cube first.",
+        "Add GeckoLib dependency; implement `GeoEntity` on the same class or a thin subclass.",
+        "Blockbench export → `assets/<modid>/geo` + `animations`; match animation names in `AnimationController`."
+      ]
+    }
+  ]
+}

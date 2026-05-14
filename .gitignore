@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+venv_stable/
+.venv/
+env/
+
+# PyInstaller / packaging artifacts
+*.spec.bak
+warn-*.txt
+xref-*.html
+
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Local packs / user data (not product source)
+packs/
+cache_test/
+reports/
+
+# Playwright MCP snapshots (local debug)
+.playwright-mcp/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Secrets — never commit
+.env
+.env.*
+*.pem
+**/mcp.json
+
+# Large binaries (rebuild via scripts/build_forager_exe.ps1)
+dist/*.exe
+
+# Taskmaster local state (optional)
+.taskmaster/state.json

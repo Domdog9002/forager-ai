@@ -1,0 +1,32 @@
+---
+description: Default stack conventions for a Lovable-generated React app (copy into YOUR Lovable repo .cursor/rules/).
+alwaysApply: true
+---
+
+# Lovable-style React app — Cursor agent rules
+
+**Install this file** in your Lovable-backed repo as:
+
+`.cursor/rules/lovable-react-stack.mdc`
+
+Then edit the bullets below to match **your** actual stack (Vite vs Next, App Router vs Pages, UI kit, etc.).
+
+## Stack (customize)
+
+- Framework: **React** (note: Next.js or Vite — pick one and delete the other).
+- Styling: **Tailwind CSS** (or your real setup).
+- Package manager: **npm** / **pnpm** / **bun** — stay consistent with lockfiles in repo.
+
+## Agent behavior
+
+- Prefer **small PR-sized diffs**; do not rename the whole tree unless asked.
+- **Match existing patterns** in the repo (folder layout, naming, data fetching) before inventing new architecture.
+- **No secrets** in code or rules: use `.env.local` (gitignored) and document variables in `README.md`.
+- After dependency or config changes, suggest the exact install command (`npm i`, `pnpm i`, etc.) the user should run if you cannot run it here.
+- For UI work, preserve **accessibility**: focus states, button labels, semantic headings.
+- If Lovable and Cursor both touch the same feature, **pull first** and reconcile before large edits.
+
+## Out of scope unless requested
+
+- Backend beyond what the template already uses.
+- Replacing the entire design system in one pass.
